@@ -7,6 +7,75 @@
     <title>Movies!</title>
     <style>
         /* Part 3: Your styling goes here */
+
+        body {
+            font-family: "Trebuchet MS", sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        img{
+            border-radius: 13px;
+            max-width: 100%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        h1{
+            font-weight: bolder;
+            margin: 20px 0;
+
+        }
+
+        article{
+            background-color: cornflowerblue;
+            border-radius: 13px;
+            margin: 15px;
+            padding: 15px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+
+            max-width: 1000px;
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+
+        article:hover {
+            transform: translateY(-5px);
+            border-color: #e94560;
+        }
+
+        .genre{
+            display: inline-block;
+            margin-right: 13px;
+            background-color: darkcyan;
+            padding: 4px 13px;
+            border-radius: 13px;
+            border: 1px solid rgba(0, 0, 0, 0.5);
+            text-transform: uppercase;
+            transition: background 0.2s;
+        }
+
+        .genre:hover {
+            background-color: #e94560;
+            cursor: pointer;
+        }
+
+        .meta {
+            display: inline-block;
+        }
+
+
+
+        article:nth-of-type(2) {
+            background-color: #27ae60;
+        }
+
+
+        article:nth-of-type(3) {
+            background-color: #e94560;
+        }
+
+
     </style>
     <script>
         function reverseString(s) {
@@ -18,15 +87,46 @@
             xhr.onload = function () {
                 const bodyElement = document.querySelector("body")
                 if (xhr.status == 200) {
-		            /* Part 2: Build the HTML elements here and append them to the body */ 
-                    bodyElement.append(reverseString(xhr.responseText))
+                    /* Part 2: Build the HTML elements here and append them to the body */
+
+                    //Objekt erstellen
+                    const movies = JSON.parse(xhr.responseText);
+
+                    //Durch jeden Film loopen
+                    movies.forEach((movie, index) => {
+
+                        const article = document.createElement("article");
+
+                        article.classList.add(`movie-${index}`);
+
+                        article.innerHTML += `
+                        <img src="${movie.Poster}" alt="${movie.Title}">
+                        <h1>${movie.Title}</h1>
+                        <p class="meta">Runtime: ${movie.Runtime} min • Released: ${movie.Released}</p>
+                        <div class="genre-container">
+                            ${movie.Genres.map(g => `<span class="genre">${g}</span>`).join('')}
+                        </div>
+                        <p>${movie.Plot}</p>
+                        <p><strong>Metascore:</strong> ${movie.Metascore} | <strong>IMDb:</strong> ${movie.imdbRating}</p>
+                        <h3>Actors</h3>
+                        <ul>${movie.Actors.map(a => `<li>${a}</li>`).join('')}</ul>
+                        `;
+
+
+                        bodyElement.appendChild(article);
+                        bodyElement.appendChild(document.createElement("hr"));
+                    })
+
+                    //bodyElement.append(xhr.responseText)
+
                 } else {
                     bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
                 }
-            }
+            };
             xhr.open("GET", "/movies")
             xhr.send()
         }
+
     </script>
 
 </head>
