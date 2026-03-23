@@ -49,7 +49,6 @@ app.get('/movies', function (req, res) {
             "Metascore": 96,
             "imdbRating": 8.6
         }];
-
     res.json(movies);
 })
 
